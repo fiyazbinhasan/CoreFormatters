@@ -10,7 +10,7 @@ namespace CustomFormatter.Formatters.Yaml
 {
     public class YamlOutputFormatter : TextOutputFormatter
     {
-        private Serializer _serializer;
+        private readonly Serializer _serializer;
 
         public YamlOutputFormatter(Serializer serializer)
         {
