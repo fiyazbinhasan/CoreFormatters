@@ -54,14 +54,15 @@ namespace CustomFormatter.Formatters.Xls
         private void WriteObject(ExcelWorksheet worksheet, object contextObject, Type type)
         {
             var properties = type.GetProperties();
-            int skipper = 0;
 
-            for (var i = 1; i <= properties.Length; i++)
+            int i = 1;
+
+            foreach (var property in properties)
             {
-                worksheet.Cells[i, 1].Value = properties.Skip(skipper).Take(1).SingleOrDefault().Name;
-                worksheet.Cells[i, 2].Value = properties.Skip(skipper).Take(1).Select(v => v.GetValue(contextObject).ToString());
+                worksheet.Cells[i, 1].Value = property.Name;
+                worksheet.Cells[i, 2].Value = property.GetValue(contextObject).ToString();
 
-                skipper++;
+                i++;
             }
 
         }
