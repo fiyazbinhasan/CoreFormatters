@@ -1,12 +1,11 @@
 ﻿using CustomFormatter.Formatters.Internal;
-using CustomFormatter.Formatters.Pdf;
-using CustomFormatter.Formatters.Xls;
+using CustomFormatter.Formatters.Yaml;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using CustomFormatter.Formatters.Yaml;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -14,43 +13,46 @@ namespace CustomFormatter
 {
     public class Startup
     {
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
-                .AddEnvironmentVariables();
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
-        public IConfigurationRoot Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddMvc(options=>
-            {
+
+            services.AddControllers(options => {
                 options.InputFormatters.Add(new YamlInputFormatter(new DeserializerBuilder().WithNamingConvention(namingConvention: new CamelCaseNamingConvention()).Build()));
                 options.OutputFormatters.Add(new YamlOutputFormatter(new SerializerBuilder().WithNamingConvention(namingConvention: new CamelCaseNamingConvention()).Build()));
                 options.FormatterMappings.SetMediaTypeMappingForFormat("yaml", MediaTypeHeaderValues.ApplicationYaml);
+            });
 
-                options.OutputFormatters.Add(new PdfOutputFormatter());
-                options.FormatterMappings.SetMediaTypeMappingForFormat("pdf", MediaTypeHeaderValues.ApplicationPdf);
-
-                options.OutputFormatters.Add(new XlsxOutputFormatter());
-                options.FormatterMappings.SetMediaTypeMappingForFormat("xlsx", MediaTypeHeaderValues.ApplicationXExel);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CustomFormatter", Version = "v1" });
             });
         }
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CustomFormatter v1"));
             }
 
-            app.UseMvcWithDefaultRoute();
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
+
