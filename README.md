@@ -1,5 +1,5 @@
 # .NET Core Custom Formatters
-### This repository contains some .NET Core Custom Formatters. Includes Yaml Input/Output Formatter, Pdf Output Formatter, Xlsx Output Formatter
+> This repository used to contain custom formatters for pdf and excel. They are removed from main branch as the libraries are deprecated. Please check previous commits if you are interested in those.
 
 .Net Core gives you some formatters out of the box. This official documentation link described them briefly,
 
