@@ -27,6 +27,7 @@ namespace CustomFormatter.Apis
             return _geeks;
         }
 
+        [Produces("application/x-yaml")]
         [FormatFilter]
         [HttpGet("{id}")]
         [HttpGet("/api/[controller]/{id}.{format?}")]
