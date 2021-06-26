@@ -14,7 +14,7 @@ namespace CustomFormatter.Apis
         {
             _geeks = new List<Geek>()
             {
-                new Geek() { Id = 1, Name = "Fiyaz", Expertise="Javascript", Rating = 3.0M },
+                new Geek() { Id = 1, Name = "Fiyaz", Expertise="Javascript", Rating = 4.0M },
                 new Geek() { Id = 2, Name = "Rick", Expertise = ".Net", Rating = 5.0M }
             };
         }

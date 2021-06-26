@@ -7,48 +7,48 @@ using CustomFormatter.Formatters.Internal;
 
 namespace CustomFormatter.Formatters.Yaml
 {
-public class YamlInputFormatter : TextInputFormatter
-{
-    private readonly Deserializer _deserializer;
-
-    public YamlInputFormatter(Deserializer deserializer)
+    public class YamlInputFormatter : TextInputFormatter
     {
-        _deserializer = deserializer;
+        private readonly Deserializer _deserializer;
 
-        SupportedEncodings.Add(Encoding.UTF8);
-        SupportedEncodings.Add(Encoding.Unicode);
-        SupportedMediaTypes.Add(MediaTypeHeaderValues.ApplicationYaml);
-        SupportedMediaTypes.Add(MediaTypeHeaderValues.TextYaml);
-    }
-
-    public override Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
-    {
-        if (context == null)
+        public YamlInputFormatter(Deserializer deserializer)
         {
-            throw new ArgumentNullException(nameof(context));
+            _deserializer = deserializer;
+
+            SupportedEncodings.Add(Encoding.UTF8);
+            SupportedEncodings.Add(Encoding.Unicode);
+            SupportedMediaTypes.Add(MediaTypeHeaderValues.ApplicationYaml);
+            SupportedMediaTypes.Add(MediaTypeHeaderValues.TextYaml);
         }
 
-        if (encoding == null)
+        public override Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
         {
-            throw new ArgumentNullException(nameof(encoding));
-        }
-
-        var request = context.HttpContext.Request;
-
-        using (var streamReader = context.ReaderFactory(request.Body, encoding))
-        {
-            var type = context.ModelType;
-
-            try
+            if (context == null)
             {
-                var model = _deserializer.Deserialize(streamReader, type);
-                return InputFormatterResult.SuccessAsync(model);
+                throw new ArgumentNullException(nameof(context));
             }
-            catch (Exception)
+
+            if (encoding == null)
             {
-                return InputFormatterResult.FailureAsync();
+                throw new ArgumentNullException(nameof(encoding));
+            }
+
+            var request = context.HttpContext.Request;
+
+            using (var streamReader = context.ReaderFactory(request.Body, encoding))
+            {
+                var type = context.ModelType;
+
+                try
+                {
+                    var model = _deserializer.Deserialize(streamReader, type);
+                    return InputFormatterResult.SuccessAsync(model);
+                }
+                catch (Exception)
+                {
+                    return InputFormatterResult.FailureAsync();
+                }
             }
         }
     }
-}
 }
