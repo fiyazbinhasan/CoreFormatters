@@ -22,7 +22,6 @@ namespace CustomFormatter
 
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers(options => {
                 options.InputFormatters.Add(new YamlInputFormatter(new DeserializerBuilder().WithNamingConvention(namingConvention: new CamelCaseNamingConvention()).Build()));
                 options.OutputFormatters.Add(new YamlOutputFormatter(new SerializerBuilder().WithNamingConvention(namingConvention: new CamelCaseNamingConvention()).Build()));
