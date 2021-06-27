@@ -21,7 +21,7 @@ namespace CustomFormatter.Formatters.Yaml
             SupportedMediaTypes.Add(MediaTypeHeaderValues.TextYaml);
         }
 
-        public override Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
+        public override async Task<InputFormatterResult> ReadRequestBodyAsync(InputFormatterContext context, Encoding encoding)
         {
             if (context == null)
             {
@@ -41,12 +41,13 @@ namespace CustomFormatter.Formatters.Yaml
 
                 try
                 {
-                    var model = _deserializer.Deserialize(streamReader, type);
-                    return InputFormatterResult.SuccessAsync(model);
+                    var content = await streamReader.ReadToEndAsync();
+                    var model = _deserializer.Deserialize(content, type);
+                    return await InputFormatterResult.SuccessAsync(model);
                 }
                 catch (Exception)
                 {
-                    return InputFormatterResult.FailureAsync();
+                    return await InputFormatterResult.FailureAsync();
                 }
             }
         }

@@ -27,7 +27,6 @@ namespace CustomFormatter.Apis
             return _geeks;
         }
 
-        [Produces("application/x-yaml")]
         [FormatFilter]
         [HttpGet("{id}")]
         [HttpGet("/api/[controller]/{id}.{format?}")]
@@ -38,6 +37,8 @@ namespace CustomFormatter.Apis
         }
 
         [HttpPost]
+        [Consumes("application/x-yaml")]
+        [Produces("application/x-yaml")]
         public Geek Post([FromBody]Geek geek)
         {
             return geek;
